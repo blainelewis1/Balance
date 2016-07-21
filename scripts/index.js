@@ -1,9 +1,9 @@
 (function() {
     var config = {};
-    config.arm_length = {value : 150, min : 1, max : 500};
-    config.gravity = {value : 0.001, min : 0.0001, max : 0.01};
-    config.friction = {value : 0.995, min : 0.9, max : 1};
-    config.cart_speed = {value : 0.5, min : 0.1, max : 1};
+    config.arm_length = {value : 150, min : 1, max : 500, scale : 1};
+    config.gravity = {value : 0.001, min : 0.0001, max : 0.01, scale : 10000};
+    config.friction = {value : 0.995, min : 0.9, max : 1, scale : 10};
+    config.cart_speed = {value : 0.5, min : 0.1, max : 1, scale : 10};
 
     var control_box = document.createElement("div");
     control_box.classList.add("controls");
@@ -12,10 +12,10 @@
             var elem = document.createElement("input");
             elem.type = "range";
             elem.id = prop;
-            elem.value = config[prop].value;
-            elem.min = config[prop].min;
-            elem.max = config[prop].max;
-            elem.step = (config[prop].max - config[prop].min) / 20;
+            elem.value = config[prop].value * config[prop].scale;
+            elem.min = config[prop].min * config[prop].scale;
+            elem.max = config[prop].max * config[prop].scale;
+            elem.step = (config[prop].max - config[prop].min) / 20 * config[prop].scale;
             elem.addEventListener("input", update_value);
 
             var label = document.createElement("label");
@@ -29,13 +29,13 @@
     document.body.appendChild(control_box);
 
     function update_value(e) {
-        config[e.target.id].value = e.target.value;
+        config[e.target.id].value = e.target.value / config[e.target.id].scale;
     }
 
 
     var EDGE_OFFSET = 10;
 
-    function draw_scene(context, canvas) {
+    function draw_scene(context, canvas, score, max_score) {
       context.lineWidth = 5;
       context.strokeStyle = "#AAAAAA";
       context.lineCap = "round";
@@ -52,6 +52,12 @@
       context.lineTo(canvas.width - EDGE_OFFSET, (canvas.height / 2) - 20);
 
       context.stroke();
+      context.font = "30px Arial";
+      context.textBaseline="bottom";
+      context.textAlign = "left";
+      context.fillText(score.toFixed(0), 0, canvas.height);
+      context.textAlign = "right";
+      context.fillText(max_score.toFixed(0), canvas.width, canvas.height);
     }
 
     //0 degrees is actually Math.PI/2 to make the physics easier.
@@ -105,16 +111,20 @@
       context.stroke();
     };
 
+    Pendulum.prototype.is_above = function() {
+        return this.axis[0].theta >= Math.PI / 2 && this.axis[0].theta <= 3 * Math.PI / 2;
+    };
+
     Pendulum.prototype.move = function(deltaTime, direction, canvas) {
         var move_amount = config.cart_speed.value * deltaTime * direction;
 
-      if(direction === -1 && this.x + move_amount - this.width > EDGE_OFFSET ) {
+      if(direction === -1 && this.x + move_amount - (this.width / 2) > EDGE_OFFSET ) {
         this.x += move_amount;
         //TODO: this needs to be acceleration so not addition
         this.axis[0].thetaVelocity -= move_amount / 100000;
       }
 
-      if(direction === 1 && this.x - move_amount + this.width < canvas.width - EDGE_OFFSET) {
+      if(direction === 1 && this.x + move_amount + (this.width / 2) < canvas.width - EDGE_OFFSET) {
         this.x += move_amount;
         this.axis[0].thetaVelocity -= move_amount / 100000;
       }
@@ -134,10 +144,13 @@
         axis.theta += axis.thetaVelocity * deltaTime;
 
 
-
-        //axis.theta = axis.theta % (Math.PI * 2);
+        axis.theta = mod(axis.theta, Math.PI * 2);
       }
     };
+
+    function mod(n, m) {
+        return ((n % m) + m) % m ;
+    }
 
     var canvas = document.getElementById("canvas");
     var context = canvas.getContext("2d");
@@ -150,7 +163,9 @@
     var previous_time;
     var left_key_down = false;
     var right_key_down = false;
-    var was_hidden;
+    var was_hidden = false;
+    var score = 0;
+    var max_score = 0;
 
     function step(t) {
         var delta_time = previous_time === undefined ? 0 : t - previous_time;
@@ -170,9 +185,19 @@
 
         pendulum.applyPhysics(delta_time);
 
+        if(pendulum.is_above()) {
+            score += delta_time;
+        }
+
+        max_score = Math.max(score, max_score);
+
+        if(!pendulum.is_above()){
+            score = 0;
+        }
+
         context.clearRect(0, 0, canvas.width, canvas.height);
         pendulum.draw(context);
-        draw_scene(context, canvas);
+        draw_scene(context, canvas, score, max_score);
 
         previous_time = t;
         window.requestAnimationFrame(step);
