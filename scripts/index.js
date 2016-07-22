@@ -1,8 +1,13 @@
 (function() {
+
     var config = {};
+    //TODO: inverted flag to make scales flip, then friction increases to the right for example.
+    //TODO: dynamic resize based on window size change
+    //TODO: I could add greyed out arrows in the background and then make it so
+    //when you tap them it moves left right, depending on which side of the screen you tap
     config.arm_length = {value : 150, min : 1, max : 500, scale : 1};
     config.gravity = {value : 0.001, min : 0.0001, max : 0.01, scale : 10000};
-    config.friction = {value : 0.995, min : 0.9, max : 1, scale : 10};
+    config.friction = {value : 0.995, min : 0.9, max : 0.999, scale : 100};
     config.cart_speed = {value : 0.5, min : 0.1, max : 1, scale : 10};
 
     var control_box = document.createElement("div");
@@ -130,7 +135,7 @@
       }
     };
 
-    Pendulum.prototype.applyPhysics = function(deltaTime) {
+    Pendulum.prototype.applyPhysics = function(delta_time) {
       for(var i = 0; i < this.axis.length; i++) {
         var axis = this.axis[i];
         //This is the second derivative of theta, which is actually the "acceleration of theta"
@@ -138,11 +143,9 @@
         //We take axis.theta * time  and add that to thetaVelocity, then take thetaVelocity * time and add that to the displacement. BAMMM
         //axis.theta += -GRAVITY / config.arm_length.value * Math.sin(axis.theta);
 
-        axis.thetaVelocity += -config.gravity.value / config.arm_length.value * Math.sin(axis.theta) * deltaTime;
-        //TODO: add deltatime to make rfiction dependent on time
+        axis.thetaVelocity += -config.gravity.value / config.arm_length.value * Math.sin(axis.theta) * delta_time;
         axis.thetaVelocity *= config.friction.value;
-        axis.theta += axis.thetaVelocity * deltaTime;
-
+        axis.theta += axis.thetaVelocity * delta_time;
 
         axis.theta = mod(axis.theta, Math.PI * 2);
       }
@@ -203,6 +206,7 @@
         window.requestAnimationFrame(step);
     }
 
+    //TODO: I could instead use keys[e.keyCode] = val. and then use the keys to get the value
     function handle_move_keys(e) {
       var val = e.type === "keydown";
 
