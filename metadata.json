@@ -1,6 +1,0 @@
-{
-    "title" : "Balance",
-    "summary" : "This is a physics experiment attempting to simulate the inverted pendulum problem. I failed a bit with the physics and wasn't able to completely replicate it, however the results are still fairly realistic. ",
-    "technologies" : ["canvas", "Javascript"],
-    "tags" : ["game"]
-}
