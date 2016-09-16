@@ -1,10 +1,12 @@
 (function() {
+//TODO: I could add greyed out arrows in the background and then make it sowhen you tap them it moves left right, depending on which side of the screen you tap
+//TODO: dynamic resize based on window size change
 
     var config = {};
     //TODO: inverted flag to make scales flip, then friction increases to the right for example.
-    //TODO: dynamic resize based on window size change
-    //TODO: I could add greyed out arrows in the background and then make it so
-    //when you tap them it moves left right, depending on which side of the screen you tap
+    //TODO: combine with schools controls
+    //TODO: I could do config.add_configurable(obj, prop, min, max, scale, default); update_value then uses an id or something.
+
     config.arm_length = {value : 150, min : 1, max : 500, scale : 1};
     config.gravity = {value : 0.001, min : 0.0001, max : 0.01, scale : 10000};
     config.friction = {value : 0.995, min : 0.9, max : 0.999, scale : 100};
