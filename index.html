@@ -1,41 +1,85 @@
+<!DOCTYPE html>
 <html>
-<head>
-    <style>
-      body, html{
-        width:  100%;
-        height: 100%;
-        margin: 0px;
-        overflow:hidden;
-      }
 
-      .controls {
-        position: fixed;
-        top:0;
-        left:0;
-        right:0;
-        margin:auto;
-        display:inline-block;
+<head>
+  <style>
+    body,
+    html {
+      width: 100%;
+      height: 100%;
+      margin: 0px;
+      overflow: hidden;
+      background-color: #1f1f1f;
+    }
+    
+    .instructions {
+      color: #E8E830;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      text-align: center;
+      font-family: Arial;
+      transform: translate(-50%, -50%);
+      -webkit-animation : fadeout 10s linear forwards;
+      animation: fadeout 10s linear forwards;
+    }
+    
+    @-webkit-keyframes fadeout {
+      0% {
+        opacity: 1;
       }
-      .controls input {
-          display:inline-block;
+      100% {
+        opacity: 0;
       }
-    </style>
+    }
+    
+    @keyframes fadeout {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+    
+    .controls {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      margin: auto;
+      display: inline-block;
+    }
+    
+    .controls input {
+      display: inline-block;
+    }
+  </style>
   <title>Balance</title>
 </head>
+
 <body>
-  <canvas id="canvas"></canvas>
+  <p class="instructions">Use a and d to move left or right, or touch the left and right sides of the screen</p>
+  <canvas></canvas>
 
   <script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    (function(i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function() {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
     ga('create', 'UA-80660221-1', 'auto');
     ga('send', 'pageview');
   </script>
 
   <script type="text/javascript" src="scripts/index.js"></script>
-  <script type="text/javascript">(function(){if(window.location.href.indexOf("blainelewis1") > -1 || window.location.href.indexOf("localhost") > -1){var s = document.createElement("script");s.async = 'async';s.src = "/scripts/project_info.js";document.head.appendChild(s);}})()</script>
 </body>
+
 </html>
