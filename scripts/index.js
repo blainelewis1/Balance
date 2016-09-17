@@ -79,9 +79,9 @@
         context.font = "30px Arial";
         context.textBaseline = "bottom";
         context.textAlign = "left";
-        context.fillText(score.toFixed(0), 0, canvas.height);
+        context.fillText(score.toFixed(0), 10, canvas.height - 10);
         context.textAlign = "right";
-        context.fillText(max_score.toFixed(0), canvas.width, canvas.height);
+        context.fillText(max_score.toFixed(0), canvas.width - 10, canvas.height - 10);
     }
 
     //0 degrees is actually Math.PI/2 to make the physics easier.
